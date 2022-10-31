@@ -1,0 +1,27 @@
+- pacman
+- flappy bird
+- pong
+- dino animation like chrome
+- animation of sun rising and setting over a scene (8 bit style)
+- run game animation
+- 3 cups animation (ball underneath)
+
+
+=> Program decomposition
+- draw field/backdrop
+- draw dots (food) around the grid (not individual turtles)
+- create pacman turtle that:
+    - moves around the field collecting/eating food (dots will dissapear)
+    - changes appearance for open, slighty open, and closed keyframes
+- dots reappear after the animation restarts (when pacman enters teleport pad on the right side)
+
+=> Extra features
+- ghosts (controlled by user?)
+- ending animation (death of pacman crossing a ghost)
+
+=> Steps and milestones
+1. create a game field and dots for pacman to navigate through [Wednesday]
+2. place dots and create pacman object, and create a path for pacman to run [Thursday]
+3. add dots dissapearing behavior when pacman crosses it [Thursday/Friday]
+4. animation will restart after crossing into the right side of the screen (teleport pad) [Friday/Monday]
+5. add second path to run [Monday/Tuesday]
