@@ -180,11 +180,11 @@ class PacmanGrid:
         self.goto(x, y)
         self.drawer.dot(5)
 
-wn = turtle.Screen()
-
 def changeCameraCenter(screen, y):
     screen.getcanvas().yview_moveto(y)
     screen.update()
+
+wn = turtle.Screen()
 
 wn.screensize(750, 2000, 'black') # Initialize screen pararmeters
 playfunnySound = lambda: threading.Thread(target=playsound('./funny.mp3')).start()
@@ -261,9 +261,7 @@ pacman.speed(1)
 def startAnimation():
     drawTitleText('Teleporting pacman...', 'italic')
     wn.onkey(lambda: None, 'space') # de-register keyevent
-    if pacman.xcor() != 0:
-        print("hey")
-        pacman.goto(0, 0) # useful after first run to sync music with movement
+    if pacman.xcor() != 0: pacman.goto(0, 0) # useful after first run to sync music with movement
     playGameTrack() # Start the audio track
     pacman.goto(-300, -25) # move to starting posistion on grid
     changeCameraCenter(wn, 0.375) # move camera back to center
@@ -281,9 +279,10 @@ def startAnimation():
         func=lambda: grid.eatDot(pacman.xcor(), pacman.ycor()), # eat the dot at the current location
         directionFunc=directionFunc
     )
+
     drawTitleText('Thanks for watching! Press SPACE to replay!', 'italic')
-    changeCameraCenter(wn, -1)
-    wn.onkey(resetAnimation, key='space')
+    changeCameraCenter(wn, -1) # send viewer back to title
+    wn.onkey(resetAnimation, key='space') # register second listener for space
     wn.listen()
 
 wn.onkey(startAnimation, key='space') # register key event on space
