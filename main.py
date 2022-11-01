@@ -226,16 +226,19 @@ def resetAnimation():
 
 grid = PacmanGrid(wn, manual = True) # Draw the grid in the background while the user is focused on title
 drawTitleText('Drawing borders...', 'italic')
+wn.tracer(False)
 grid._drawBorder()
-playfunnySound()
+#playfunnySound()
 drawTitleText('Drawing objects...', 'italic')
 grid._drawBarriers()
-playfunnySound()
+#playfunnySound()
 drawTitleText('Drawing pacman food...', 'italic')
 grid._drawDots()
+wn.update()
+wn.tracer(True)
 
 drawTitleText('Press SPACE to begin!', 'italic')
-playfunnySound()
+#playfunnySound()
 
 playGameTrack = lambda: threading.Thread(
     target=lambda: playsound('./theme.mp3'), # callable to start the sound
@@ -256,7 +259,7 @@ shapeMap = {
 
 pacman = turtle.Turtle(shape='./1n.gif') # Create pacman object
 pacman.penup()
-pacman.speed(1)
+pacman.speed(2)
 
 def startAnimation():
     drawTitleText('Teleporting pacman...', 'italic')
@@ -273,13 +276,15 @@ def startAnimation():
         if direction != lastDirection: shapeMap[direction]() # change pacman's shape to face the correct direction
         lastDirection = direction
     pathRunner = PathRunner(pacman)
+    testPath = ['r1', 'r1', 'r1', 'u1', 'u1', 'l1', 'l1', 'u1', 'r1', 'd1', 'l1', 'u1', 'u1', 'u1', 'r1', 'r1', 'r1', 'r1', 'd1', 'd1', 'l1', 'd1', 'd1', 'r1', 'd1', 'r1', 'd1', 'd1', 'l1', 'l1', 'l1', 'l1', 'l1', 'd1', 'd1', 'r1', 'r1', 'r1', 'u1', 'r1', 'u1', 'r1', 'r1', 'd1', 'r1', 'd1', 'r1', 'r1', 'r1', 'u1', 'u1', 'l1', 'l1', 'l1', 'l1', 'l1', 'l1', 'l1', 'l1', 'u1', 'u1', 'u1', 'u1', 'r1', 'u1', 'r1', 'r1', 'r1', 'u1', 'u1', 'r1', 'r1', 'r1', 'r1', 'd1', 'd1', 'd1', 'l1', 'u1', 'r1', 'd1', 'l1', 'l1', 'd1', 'l1', 'l1', 'd1', 'l1', 'l1', 'u1', 'l1', 'u1', 'u1', 'r1', 'r1', 'r1', 'r1', 'd1', 'r1', 'd1', 'd1', 'd1', 'u1', 'r1', 'r1', 'r3']
+    originalPath = ['r1', 'r1', 'r1', 'u1', 'u1', 'l1', 'l1', 'u1', 'r1', 'd1', 'l1', 'u1', 'u1', 'u1', 'r1', 'r1', 'r1', 'r1', 'd1', 'd1', 'l1', 'd1', 'd1', 'r1', 'd1', 'r1', 'd1', 'd1', 'l1', 'l1', 'l1', 'l1', 'l1', 'd1', 'd1', 'r1', 'r1', 'r1', 'u1', 'r1', 'u1', 'l1', 'l1', 'd1', 'r1', 'd1', 'r1', 'r1', 'r1', 'u1', 'u1', 'l1', 'l1', 'l1', 'l1', 'l1', 'u1', 'u1', 'r1', 'u1', 'r1', 'u1', 'u1', 'l1', 'u1', 'u1', 'r1', 'r1', 'r1', 'r1', 'd1', 'd1', 'd1', 'l1', 'u1', 'r1', 'd1', 'l1', 'l1']
     pathRunner.runPath(
-        ['r1', 'r1', 'r1', 'd1', 'd1', 'l1', 'l1', 'd1', 'd1', 'r1', 'r1', 'r1', 'u1', 'u1', 'r1', 'r1', 'u1', 'u1', 'l1', 'u1', 'l1', 'u1', 'l1', 'l1', 'l1', 'u1', 'u1', 'u1', 'r1', 'r1', 'r1', 'r1', 'd1', 'd1', 'r1', 'r1', 'r1', 'd1', 'r1', 'd1', 'd1', 'r1', 'r1', 'r4'],
+        testPath,
         delay=0.19,
         func=lambda: grid.eatDot(pacman.xcor(), pacman.ycor()), # eat the dot at the current location
         directionFunc=directionFunc
     )
-
+    time.sleep(0.25) # wait a second after animation is finished
     drawTitleText('Thanks for watching! Press SPACE to replay!', 'italic')
     changeCameraCenter(wn, -1) # send viewer back to title
     wn.onkey(resetAnimation, key='space') # register second listener for space
