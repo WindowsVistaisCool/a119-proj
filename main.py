@@ -9,11 +9,11 @@ class PathRunner:
         self.instructions = instructions
         self.TILE_WIDTH = 50
 
-    def runPath(self, instructions: list, delay = None, func = None):
+    def runPath(self, instructions: list, delay = None, func = None, directionFunc = None):
         self.instructions = instructions
-        self.run(delay, func)
+        self.run(delay, func, directionFunc)
 
-    def run(self, delay=None, func = None):
+    def run(self, delay=None, func = None, directionFunc = None):
         directionParser = {
             'u': lambda t: t.setheading(90),
             'd': lambda t: t.setheading(270),
@@ -25,6 +25,7 @@ class PathRunner:
             oldSpeed = self.turtle.speed()
             self.turtle.speed(0)
             directionParser[direction](self.turtle)
+            if directionFunc: directionFunc(direction)
             self.turtle.speed(oldSpeed)
             self.turtle.forward(self.TILE_WIDTH * int(distance))
             if delay: time.sleep(delay)
@@ -242,6 +243,17 @@ playGameTrack = lambda: threading.Thread(
 ).start() # Thread for sound (so it can run independently of turtle)
 
 wn.addshape('./1n.gif')
+wn.addshape('./2n.gif')
+wn.addshape('./3n.gif')
+wn.addshape('./4n.gif')
+
+shapeMap = {
+    'r': lambda: pacman.shape('./1n.gif'),
+    'd': lambda: pacman.shape('./2n.gif'),
+    'l': lambda: pacman.shape('./3n.gif'),
+    'u': lambda: pacman.shape('./4n.gif')
+}
+
 pacman = turtle.Turtle(shape='./1n.gif') # Create pacman object
 pacman.penup()
 pacman.speed(1)
@@ -249,15 +261,25 @@ pacman.speed(1)
 def startAnimation():
     drawTitleText('Teleporting pacman...', 'italic')
     wn.onkey(lambda: None, 'space') # de-register keyevent
+    if pacman.xcor() != 0:
+        print("hey")
+        pacman.goto(0, 0) # useful after first run to sync music with movement
     playGameTrack() # Start the audio track
     pacman.goto(-300, -25) # move to starting posistion on grid
     changeCameraCenter(wn, 0.375) # move camera back to center
     time.sleep(0.75) # wait for audio to start playing
+
+    lastDirection = 'l'
+    def directionFunc(direction): # function that runs each step of the path
+        nonlocal lastDirection
+        if direction != lastDirection: shapeMap[direction]() # change pacman's shape to face the correct direction
+        lastDirection = direction
     pathRunner = PathRunner(pacman)
     pathRunner.runPath(
         ['r1', 'r1', 'r1', 'd1', 'd1', 'l1', 'l1', 'd1', 'd1', 'r1', 'r1', 'r1', 'u1', 'u1', 'r1', 'r1', 'u1', 'u1', 'l1', 'u1', 'l1', 'u1', 'l1', 'l1', 'l1', 'u1', 'u1', 'u1', 'r1', 'r1', 'r1', 'r1', 'd1', 'd1', 'r1', 'r1', 'r1', 'd1', 'r1', 'd1', 'd1', 'r1', 'r1', 'r4'],
         delay=0.19,
-        func=lambda: grid.eatDot(pacman.xcor(), pacman.ycor())
+        func=lambda: grid.eatDot(pacman.xcor(), pacman.ycor()), # eat the dot at the current location
+        directionFunc=directionFunc
     )
     drawTitleText('Thanks for watching! Press SPACE to replay!', 'italic')
     changeCameraCenter(wn, -1)
